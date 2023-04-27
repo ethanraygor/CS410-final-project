@@ -11,16 +11,11 @@ public class ClassManagement {
         }
         boolean running = true;
 
-        System.out.println("Class Management");
-        System.out.println("Category and Assignment Management");
-        System.out.println("Student Management");
-        System.out.println("Grade Reporting");
-        System.out.println("Grade Calculation");
-
         Scanner scanner = new Scanner(System.in);
         String input = "";
         
         while (running){
+            printMenu();
             input = scanner.next();
             input = input.toLowerCase();
 
@@ -42,8 +37,6 @@ public class ClassManagement {
                             }
 
                         }
-
-
                         // reateClass()
                     break;
                 case "q":
@@ -54,5 +47,14 @@ public class ClassManagement {
                     break;
             }
         }
+    }
+
+    private static void printMenu(){
+        System.out.println("Class Management");
+        System.out.println("Category and Assignment Management");
+        System.out.println("Student Management");
+        System.out.println("Grade Reporting");
+        System.out.println("Grade Calculation");
+        System.out.println("q");
     }
 }

@@ -9,7 +9,7 @@ public class Database {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:"+databasePort+"/test?verifyServerCertificate=false&useSSL=true&serverTimezone=UTC", "msandbox",
                     databasePassword);
             // Do something with the Connection
-            System.out.println("Database [test db] connection succeeded!");
+            System.out.println("Database connection succeeded!");
             System.out.println();
             return con;
         } catch (SQLException sqlException) {
