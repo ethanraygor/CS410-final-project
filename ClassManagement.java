@@ -46,6 +46,9 @@ public class ClassManagement {
 
                         // reateClass()
                     break;
+                case "q":
+                    running=false;
+                    break;
                 default:
                     System.out.println("invalid selection");
                     break;
