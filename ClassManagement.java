@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class ClassManagement {
     public static void main(String[] args) {
-        Connection con;
+        Connection con = null;
         try {
             con = Database.getDatabaseConnection();
         } catch (SQLException e) {
