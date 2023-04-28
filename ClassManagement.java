@@ -89,6 +89,7 @@ public class ClassManagement {
      * Prints the Main Menu
      */
     private static void printMenu(){
+        System.out.println("");
         System.out.println("cm : Class Management");
         System.out.println("cam : Category and Assignment Management");
         System.out.println("sm : Student Management");
