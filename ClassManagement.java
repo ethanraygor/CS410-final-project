@@ -21,9 +21,7 @@ public class ClassManagement {
         
         while (running){
             printMenu();
-            if(scanner==null){
-                scanner = new Scanner(System.in);
-            }
+            scanner = new Scanner(System.in);
             input = scanner.next();
             input = input.toLowerCase();
 
@@ -52,6 +50,7 @@ public class ClassManagement {
                     break;
                 case "cam":
                     if(activeClassId>0){
+                        scanner.close();
                         running = categoryAssignmentManagement(activeClassId, con);
                     }else{
                         System.out.println("Activate a class first using Class Management");
