@@ -20,7 +20,7 @@ public class ClassManagement {
             input = input.toLowerCase();
 
             switch(input){
-                case "class management":
+                case "cm":
                         System.out.print("Create a class: ");
                         Scanner sc = new Scanner(scanner.next());
                         sc.useDelimiter(" ");
@@ -39,6 +39,14 @@ public class ClassManagement {
                         }
                         // reateClass()
                     break;
+                case "cam":
+                    break;
+                case "sm":
+                    break;
+                case "gr":
+                    break;
+                case "gc":
+                    break;
                 case "q":
                     running=false;
                     break;
@@ -47,14 +55,16 @@ public class ClassManagement {
                     break;
             }
         }
+
+        scanner.close();
     }
 
     private static void printMenu(){
-        System.out.println("Class Management");
-        System.out.println("Category and Assignment Management");
-        System.out.println("Student Management");
-        System.out.println("Grade Reporting");
-        System.out.println("Grade Calculation");
-        System.out.println("q");
+        System.out.println("cm - Class Management");
+        System.out.println("cam - Category and Assignment Management");
+        System.out.println("sm - Student Management");
+        System.out.println("gr - Grade Reporting");
+        System.out.println("gc - Grade Calculation");
+        System.out.println("q - Quit");
     }
 }
