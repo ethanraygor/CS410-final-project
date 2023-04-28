@@ -2,6 +2,15 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class ClassManagement {
+
+    /**
+     * MAIN
+     */
+
+    /**
+     * Main
+     * @param args
+     */
     public static void main(String[] args) {
         Connection con = null;
         try {
@@ -57,8 +66,7 @@ public class ClassManagement {
                 case "sm":
                     break;
                 case "gr":
-                    break;
-                case "gc":
+                    running = gradeReporting(activeClassId, con, scanner);
                     break;
                 case "q":
                     running=false;
@@ -88,6 +96,10 @@ public class ClassManagement {
         System.out.println("gc : Grade Calculation");
         System.out.println("q : Quit");
     }
+
+    /**
+     * CATEGORY AND ASSIGNMENT MANAGEMENT
+     */
 
     /**
      * Handles the Category and Assignment Management Menu
@@ -355,6 +367,66 @@ public class ClassManagement {
         System.out.println("add-category name weight : add a new category"); 
         System.out.println("show-assignments : list the assignments with their point values, grouped by category"); 
         System.out.println("add-assignment name category description points : add a new assignment");
+        System.out.println("m : Main Menu");
+        System.out.println("q : Quit");
+    }
+
+    /**
+     * GRADE REPORTING AND CALCULATION
+     */
+
+    private static boolean gradeReporting(int classID, Connection c, Scanner scan){
+        boolean rVal = true;
+        boolean running = true;
+        String input = "";
+        String[] args;
+
+        while(running){
+            printGRMenu();
+
+            input = scan.nextLine();
+            args = input.split("\\s+");
+
+            switch(args[0]){
+                case "student-grades":
+                    if(args.length!=2){
+                        System.out.println("student-grades takes 1 arg");
+                    }else{
+                        studentGrades(args, classID, c);
+                    }
+                    break;
+                case "gradebook":
+                    if(args.length!=1){
+                        System.out.println("gradebook takes 0 args");
+                    }else{
+                        gradebook(classID, c);
+                    }
+                    break;
+                case "m":
+                    running = false;
+                    break;
+                case "q":
+                    running = false;
+                    rVal = false;
+                    break;
+                default:
+                    System.out.println("invalid selection");
+                    break;
+            }
+        }
+        return rVal;
+    }
+
+    private static void gradebook(int classID, Connection c) {
+    }
+
+    private static void studentGrades(String[] args, int classID, Connection c) {
+    }
+
+    private static void printGRMenu() {
+        System.out.println("");
+        System.out.println("student-grades username : show student’s current grades");
+        System.out.println("gradebook : show the current class’s gradebook");
         System.out.println("m : Main Menu");
         System.out.println("q : Quit");
     }
