@@ -50,7 +50,6 @@ public class ClassManagement {
                     break;
                 case "cam":
                     if(activeClassId>0){
-                        scanner.close();
                         running = categoryAssignmentManagement(activeClassId, con);
                     }else{
                         System.out.println("Activate a class first using Class Management");
@@ -69,9 +68,8 @@ public class ClassManagement {
                     System.out.println("invalid selection");
                     break;
             }
+            scanner.close();
         }
-
-        scanner.close();
     }
 
     /**
