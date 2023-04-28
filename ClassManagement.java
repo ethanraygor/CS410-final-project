@@ -419,9 +419,111 @@ public class ClassManagement {
     }
 
     private static void gradebook(int classID, Connection c) {
+        /*int id = classID;
+        Statement s = null;
+
+        System.out.println("");
+        
+        try{
+            c.setAutoCommit(false);
+            s = c.createStatement();
+            ResultSet rSet = s.executeQuery("SELECT gradebook.categories.category_name AS name, gradebook.categories.weight FROM gradebook.categories WHERE gradebook.categories.class_id="+Integer.toString(id)+";");
+            ResultSetMetaData rsmd = rSet.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for(int i=1; i<=columnCount; i++){
+                if(i>1){
+                    System.out.print(", ");
+                }
+                System.out.print(rsmd.getColumnName(i));
+            }
+            System.out.println(" ");
+            while(rSet.next()){
+                for(int i=1; i<=columnCount; i++){
+                    if(i>1){
+                        System.out.print(", ");
+                    }
+                    System.out.print(rSet.getString(i)+" ");
+                }
+                System.out.println(" ");
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        */
     }
 
     private static void studentGrades(String[] args, int classID, Connection c) {
+        int id = classID;
+        String username = args[1];
+        int stID = -1;
+        String studentID = "0";
+        Statement s = null;
+        Statement s2 = null;
+
+        System.out.println("");
+        
+        try{
+            c.setAutoCommit(false);
+            s2 = c.createStatement();
+            ResultSet rSet2 = s2.executeQuery("SELECT gradebook.students.student_id FROM gradebook.students WHERE gradebook.students.username='"+username+"'");
+            if(rSet2.next()){
+                studentID = rSet2.getString(1);
+            }
+            stID = Integer.parseInt(studentID);
+            s = c.createStatement();
+            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_description AS description, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
+            ResultSetMetaData rsmd = rSet.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for(int i=1; i<=columnCount; i++){
+                if(i>1){
+                    System.out.print(", ");
+                }
+                System.out.print(rsmd.getColumnName(i));
+            }
+            System.out.println(" ");
+            while(rSet.next()){
+                for(int i=1; i<=columnCount; i++){
+                    if(i>1){
+                        System.out.print(", ");
+                    }
+                    System.out.print(rSet.getString(i)+" ");
+                }
+                System.out.println(" ");
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                if(s2!=null){
+                    s2.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private static void printGRMenu() {
