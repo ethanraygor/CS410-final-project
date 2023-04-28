@@ -41,7 +41,10 @@ CREATE TABLE assignments (
 	assignment_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     assignment_name VARCHAR(255) NOT NULL,
     assignment_description VARCHAR(255) NOT NULL,
-    assignment_value INTEGER NOT NULL
+    assignment_value INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+
+    FOREIGN KEY(category_id) REFERENCES categories(category_id)
 );
 
 CREATE TABLE assigned (
