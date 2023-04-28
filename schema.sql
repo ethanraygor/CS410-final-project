@@ -51,7 +51,7 @@ CREATE TABLE assigned (
 	assigned_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     student_id INTEGER NOT NULL,
     assignment_id INTEGER NOT NULL,
-    grade INTEGER NOT NULL,
+    grade INTEGER,
     
 	FOREIGN KEY(student_id) REFERENCES students(student_id),
     FOREIGN KEY(assignment_id) REFERENCES assignments(assignment_id)
@@ -59,8 +59,13 @@ CREATE TABLE assigned (
 );
 
 -- Ensure that the same name and class_id do not appear together in categories
-CREATE UNIQUE INDEX idx_unique_name_category
+CREATE UNIQUE INDEX idx_unique_category
 ON categories (category_name, class_id);
+
+-- Ensure that the same assignment name does not appear in one class
+CREATE UNIQUE INDEX idx_unique_assignment
+ON assignments (a_name, (SELECT class_id FROM categories WHERE category_id = assignments.category_id));
+
 
 -- drop table students; 
 -- drop table categories; 
