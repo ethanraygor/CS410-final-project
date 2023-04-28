@@ -111,28 +111,28 @@ public class ClassManagement {
             switch(args[0]){
                 case "show-categories":
                     if(args.length!=1){
-                        System.out.println("invalid selection");
+                        System.out.println("show-categories takes 0 args");
                     }else{
                         showCategories(classId, c);
                     }
                     break;
                 case "add-category":
                     if(args.length!=3){
-                        System.out.println("invalid selection");
+                        System.out.println("add-category takes 2 args");
                     }else{
                         addCategory(args, classId, c);
                     }
                     break;
                 case "show-assignments":
                     if(args.length!=1){
-                        System.out.println("invalid selection");
+                        System.out.println("show-assignments takes 0 args");
                     }else{
                         showAssignments(classId, c);
                     }
                     break;
                 case "add-assignment":
                     if(args.length!=5){
-                        System.out.println("invalid selection");
+                        System.out.println("add-assignment takes 4 args");
                     }else{
                         addAssignment(args, classId, c);
                     }
@@ -165,6 +165,7 @@ public class ClassManagement {
         String description = args[3];
         int points = Integer.parseInt(args[4]);
         int catId = -1;
+        String categoryId = "0";
         Statement s = null;
         Statement s2 = null;
 
@@ -174,7 +175,9 @@ public class ClassManagement {
             c.setAutoCommit(false);
             s2 = c.createStatement();
             ResultSet rSet = s2.executeQuery("SELECT gradebook.categories.category_id FROM gradebook.categories WHERE gradebook.categories.class_id="+Integer.toString(id)+" AND gradebook.categories.category_name='"+category+"'");
-            String categoryId = rSet.getString(1);
+            if(rSet.next()){
+                categoryId = rSet.getString(1);
+            }
             catId = Integer.parseInt(categoryId);
             s = c.createStatement();
             s.executeUpdate("INSERT INTO gradebook.assignments (assignment_name, assignment_description, assignment_value, category_id) VALUES ('"+name+"', '"+description+"'', "+Integer.toString(points)+", "+Integer.toString(catId)+")");
