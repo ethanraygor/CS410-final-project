@@ -62,11 +62,6 @@ CREATE TABLE assigned (
 CREATE UNIQUE INDEX idx_unique_category
 ON categories (category_name, class_id);
 
--- Ensure that the same assignment name does not appear in one class
-CREATE UNIQUE INDEX idx_unique_assignment
-ON assignments (a_name, (SELECT class_id FROM categories WHERE category_id = assignments.category_id));
-
-
 -- drop table students; 
 -- drop table categories; 
 -- drop table classes; 
