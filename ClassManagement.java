@@ -70,6 +70,11 @@ public class ClassManagement {
             
         }
         scanner.close();
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,6 +93,7 @@ public class ClassManagement {
      * Handles the Category and Assignment Management Menu
      * @param classId the id of the currently selected class
      * @param c SQL connection
+     * @param scanner System.in scanner
      * @return tell the main menu to quit or not
      */
     private static boolean categoryAssignmentManagement(int classId, Connection c, Scanner scanner){
@@ -171,11 +177,36 @@ public class ClassManagement {
      * Adds a category to the current class
      * @param args contains name and weight of category
      * @param classId current class ID
+     * @param c SQL connection
      */
-    private static void addCategory(String[] args, int classId) {
+    private static void addCategory(String[] args, int classId, Connection c) {
         int id = classId;
         String name = args[1];
         int weight = Integer.parseInt(args[2]);
+        Statement s = null;
+
+        try{
+            c.setAutoCommit(false);
+            s = c.createStatement();
+            s.executeUpdate("INSERT INTO gradebook.categories (name, weight, class_id) VALUES ("+name+", "+Integer.toString(weight)+", "+Integer.toString(id)+")");
+            System.out.println("\nCategory added!\n");
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -186,6 +217,8 @@ public class ClassManagement {
     private static void showCategories(int classId, Connection c){
         int id = classId;
         Statement s = null;
+
+        System.out.println("");
         
         try{
             c.setAutoCommit(false);
@@ -227,6 +260,8 @@ public class ClassManagement {
             }
         }
         
+        System.out.println("");
+
     }
 
     /**
