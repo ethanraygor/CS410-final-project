@@ -185,11 +185,13 @@ public class ClassManagement {
         int weight = Integer.parseInt(args[2]);
         Statement s = null;
 
+        System.out.println("");
+
         try{
             c.setAutoCommit(false);
             s = c.createStatement();
-            s.executeUpdate("INSERT INTO gradebook.categories (category_name, weight, class_id) VALUES ("+name+", "+Integer.toString(weight)+", "+Integer.toString(id)+")");
-            System.out.println("\nCategory added!\n");
+            s.executeUpdate("INSERT INTO gradebook.categories (category_name, weight, class_id) VALUES ('"+name+"'', "+Integer.toString(weight)+", "+Integer.toString(id)+")");
+            System.out.println("Category added!");
         }catch(SQLException e){
             System.out.println(e.getMessage());
             try {
@@ -207,6 +209,8 @@ public class ClassManagement {
                 System.out.println(e.getMessage());
             }
         }
+
+        System.out.println("");
     }
 
     /**
