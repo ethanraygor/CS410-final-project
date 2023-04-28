@@ -180,7 +180,7 @@ public class ClassManagement {
             }
             catId = Integer.parseInt(categoryId);
             s = c.createStatement();
-            s.executeUpdate("INSERT INTO gradebook.assignments (assignment_name, assignment_description, assignment_value, category_id) VALUES ('"+name+"', '"+description+"'', "+Integer.toString(points)+", "+Integer.toString(catId)+")");
+            s.executeUpdate("INSERT INTO gradebook.assignments (assignment_name, assignment_description, assignment_value, category_id) VALUES ('"+name+"', '"+description+"', "+Integer.toString(points)+", "+Integer.toString(catId)+")");
             System.out.println("Assignment added!");
         }catch(SQLException e){
             System.out.println(e.getMessage());
