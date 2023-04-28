@@ -188,7 +188,7 @@ public class ClassManagement {
         try{
             c.setAutoCommit(false);
             s = c.createStatement();
-            s.executeUpdate("INSERT INTO gradebook.categories (name, weight, class_id) VALUES ("+name+", "+Integer.toString(weight)+", "+Integer.toString(id)+")");
+            s.executeUpdate("INSERT INTO gradebook.categories (category_name, weight, class_id) VALUES ("+name+", "+Integer.toString(weight)+", "+Integer.toString(id)+")");
             System.out.println("\nCategory added!\n");
         }catch(SQLException e){
             System.out.println(e.getMessage());
