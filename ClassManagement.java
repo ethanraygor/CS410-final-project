@@ -134,7 +134,7 @@ public class ClassManagement {
                     if(args.length!=5){
                         System.out.println("invalid selection");
                     }else{
-                        addAssignment(args, classId);
+                        addAssignment(args, classId, c);
                     }
                     break;
                 case "m":
@@ -156,13 +156,49 @@ public class ClassManagement {
      * Adds an Assignment in the current class
      * @param args contains name, category, description, and points
      * @param classId current class ID
+     * @param c SQL connection
      */
-    private static void addAssignment(String[] args, int classId) {
+    private static void addAssignment(String[] args, int classId, Connection c) {
         int id = classId;
         String name = args[1];
         String category = args[2];
         String description = args[3];
         int points = Integer.parseInt(args[4]);
+        int catId = -1;
+        Statement s = null;
+        Statement s2 = null;
+
+        System.out.println("");
+
+        try{
+            c.setAutoCommit(false);
+            s2 = c.createStatement();
+            ResultSet rSet = s2.executeQuery("SELECT gradebook.categories.category_id FROM gradebook.categories WHERE gradebook.categories.class_id="+Integer.toString(id)+" AND gradebook.categories.category_name='"+category+"'");
+            String categoryId = rSet.getString(1);
+            catId = Integer.parseInt(categoryId);
+            s = c.createStatement();
+            s.executeUpdate("INSERT INTO gradebook.assignments (assignment_name, assignment_description, assignment_value, category_id) VALUES ('"+name+"', '"+description+"'', "+Integer.toString(points)+", "+Integer.toString(catId)+")");
+            System.out.println("Assignment added!");
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                if(s2!=null){
+                    s2.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -179,7 +215,7 @@ public class ClassManagement {
         try{
             c.setAutoCommit(false);
             s = c.createStatement();
-            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_description AS description, gradebook.assignments.assignment_value AS points FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
+            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_description AS description, gradebook.assignments.assignment_value AS points, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
             ResultSetMetaData rsmd = rSet.getMetaData();
             int columnCount = rsmd.getColumnCount();
             for(int i=1; i<=columnCount; i++){
