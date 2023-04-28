@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ClassManagement {
@@ -471,6 +472,7 @@ public class ClassManagement {
         String username = args[1];
         int stID = -1;
         String studentID = "0";
+        HashMap<String, Double> weights = new HashMap<String, Double>();
         Statement s = null;
         Statement s2 = null;
 
@@ -484,17 +486,17 @@ public class ClassManagement {
                 studentID = rSet2.getString(1);
             }
             stID = Integer.parseInt(studentID);
+            s2.close();
+            s2 = c.createStatement();
+            rSet2 = s2.executeQuery("SELECT AVG(gradebook.categories.weight) AS weight, gradebook.categories.category_name AS cat_name FROM gradebook.categories INNER JOIN gradebook.assignments ON gradebook.categories.category_id=gradebook.assignments.category_id WHERE gradebook.categories.class_id="+Integer.toString(classID)+" GROUP BY cat_name;");
+            while(rSet2.next()){
+                weights.put(rSet2.getString(2), Double.parseDouble(rSet2.getString(1)));
+            }
             s = c.createStatement();
-            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_description AS description, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
+            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
             ResultSetMetaData rsmd = rSet.getMetaData();
             int columnCount = rsmd.getColumnCount();
-            for(int i=1; i<=columnCount; i++){
-                if(i>1){
-                    System.out.print(", ");
-                }
-                System.out.print(rsmd.getColumnName(i));
-            }
-            System.out.println(" ");
+            System.out.println("assignment , possible points , points earned , score , category");
             while(rSet.next()){
                 for(int i=1; i<=columnCount; i++){
                     if(i>1){
