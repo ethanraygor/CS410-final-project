@@ -120,7 +120,7 @@ public class ClassManagement {
                     if(args.length!=3){
                         System.out.println("invalid selection");
                     }else{
-                        addCategory(args, classId);
+                        addCategory(args, classId, c);
                     }
                     break;
                 case "show-assignment":
