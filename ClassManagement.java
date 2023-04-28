@@ -190,7 +190,7 @@ public class ClassManagement {
         try{
             c.setAutoCommit(false);
             s = c.createStatement();
-            s.executeUpdate("INSERT INTO gradebook.categories (category_name, weight, class_id) VALUES ('"+name+"'', "+Integer.toString(weight)+", "+Integer.toString(id)+")");
+            s.executeUpdate("INSERT INTO gradebook.categories (category_name, weight, class_id) VALUES ('"+name+"', "+Integer.toString(weight)+", "+Integer.toString(id)+")");
             System.out.println("Category added!");
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -272,6 +272,7 @@ public class ClassManagement {
      * Prints the Category and Assignemnt Management Menu
      */
     private static void printCAMMenu(){
+        System.out.println("");
         System.out.println("show-categories : list the categories with their weights");
         System.out.println("add-category name weight : add a new category"); 
         System.out.println("show-assignment : list the assignments with their point values, grouped by category"); 
