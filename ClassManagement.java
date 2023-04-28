@@ -21,7 +21,6 @@ public class ClassManagement {
         
         while (running){
             printMenu();
-            scanner = new Scanner(System.in);
             input = scanner.next();
             input = input.toLowerCase();
 
@@ -50,7 +49,7 @@ public class ClassManagement {
                     break;
                 case "cam":
                     if(activeClassId>0){
-                        running = categoryAssignmentManagement(activeClassId, con);
+                        running = categoryAssignmentManagement(activeClassId, con, scanner);
                     }else{
                         System.out.println("Activate a class first using Class Management");
                     }
@@ -68,8 +67,9 @@ public class ClassManagement {
                     System.out.println("invalid selection");
                     break;
             }
-            scanner.close();
+            
         }
+        scanner.close();
     }
 
     /**
@@ -90,10 +90,9 @@ public class ClassManagement {
      * @param c SQL connection
      * @return tell the main menu to quit or not
      */
-    private static boolean categoryAssignmentManagement(int classId, Connection c){
+    private static boolean categoryAssignmentManagement(int classId, Connection c, Scanner scanner){
         boolean running = true;
         boolean rVal = true;
-        Scanner scanner = new Scanner(System.in);
         String input = "";
         String[] args;
 
@@ -144,9 +143,6 @@ public class ClassManagement {
                     break;
             }
         }
-
-        scanner.close();
-
         return rVal;
     }
 
