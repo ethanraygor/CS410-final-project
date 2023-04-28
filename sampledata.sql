@@ -435,9 +435,15 @@ insert into enroll (enroll_id, class_id, student_id) values (297, 10, 3);
 insert into enroll (enroll_id, class_id, student_id) values (298, 3, 11);
 insert into enroll (enroll_id, class_id, student_id) values (299, 9, 13);
 insert into enroll (enroll_id, class_id, student_id) values (300, 8, 66);
+insert into enroll (enroll_id, class_id, student_id) values (301, 1, 1);
 
 
 -- assignments
 insert into assignments (assignment_name, assignment_description, assignment_value, category_id) values ('hw1', 'hw', 20, 1);
 insert into assignments (assignment_name, assignment_description, assignment_value, category_id) values ('hw2', 'hw', 20, 1);
 insert into assignments (assignment_name, assignment_description, assignment_value, category_id) values ('exam1', 'exam', 100, 2);
+
+-- assigned
+insert into assigned (student_id, assignment_id, grade) values (1, 1, 15);
+insert into assigned (student_id, assignment_id, grade) values (1, 2, 15);
+insert into assigned (student_id, assignment_id, grade) values (1, 3, 75);
