@@ -3,8 +3,9 @@ import java.util.Scanner;
 
 public class ClassManagement {
     public static void main(String[] args) {
+        Connection con;
         try {
-            Connection con = Database.getDatabaseConnection();
+            con = Database.getDatabaseConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,7 +46,7 @@ public class ClassManagement {
                     break;
                 case "cam":
                     if(activeClassId>0){
-                        running = categoryAssignmentManagement(activeClassId);
+                        running = categoryAssignmentManagement(activeClassId, con);
                     }else{
                         System.out.println("Activate a class first using Class Management");
                     }
@@ -83,9 +84,10 @@ public class ClassManagement {
     /**
      * Handles the Category and Assignment Management Menu
      * @param classId the id of the currently selected class
+     * @param c SQL connection
      * @return tell the main menu to quit or not
      */
-    private static boolean categoryAssignmentManagement(int classId){
+    private static boolean categoryAssignmentManagement(int classId, Connection c){
         boolean running = true;
         boolean rVal = true;
         Scanner scanner = new Scanner(System.in);
@@ -103,7 +105,7 @@ public class ClassManagement {
                     if(args.length!=1){
                         System.out.println("invalid selection");
                     }else{
-                        showCategories(classId);
+                        showCategories(classId, c);
                     }
                     break;
                 case "add-category":
@@ -180,9 +182,52 @@ public class ClassManagement {
     /**
      * Shows the categories in the current class
      * @param classId current class ID
+     * @param c SQL connection
      */
-    private static void showCategories(int classId) {
+    private static void showCategories(int classId, Connection c){
         int id = classId;
+        Statement s = null;
+        
+        try{
+            c.setAutoCommit(false);
+            s = c.createStatement();
+            ResultSet rSet = s.executeQuery("SELECT gradebook.categories.category_name AS name, gradebook.categories.weight FROM gradebook.categories WHERE gradebook.categories.class_id="+Integer.toString(id)+";");
+            ResultSetMetaData rsmd = rSet.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for(int i=1; i<=columnCount; i++){
+                if(i>1){
+                    System.out.print(", ");
+                }
+                System.out.print(rsmd.getColumnName(i));
+            }
+            System.out.println(" ");
+            while(rSet.next()){
+                for(int i=1; i<=columnCount; i++){
+                    if(i>1){
+                        System.out.print(", ");
+                    }
+                    System.out.print(rSet.getString(i)+" ");
+                }
+                System.out.println(" ");
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        
     }
 
     /**
