@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS gradebook;
+USE gradebook;
+
 CREATE TABLE classes (
     class_id INTEGER PRIMARY KEY AUTO_INCREMENT,
     course_number VARCHAR(255) NOT NULL,
