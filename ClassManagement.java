@@ -123,11 +123,11 @@ public class ClassManagement {
                         addCategory(args, classId, c);
                     }
                     break;
-                case "show-assignment":
+                case "show-assignments":
                     if(args.length!=1){
                         System.out.println("invalid selection");
                     }else{
-                        showAssignments(classId);
+                        showAssignments(classId, c);
                     }
                     break;
                 case "add-assignment":
@@ -168,9 +168,53 @@ public class ClassManagement {
     /**
      * Shows the assignments of the current class
      * @param classId current class ID
+     * @param c SQL connection
      */
-    private static void showAssignments(int classId) {
+    private static void showAssignments(int classId, Connection c) {
         int id = classId;
+        Statement s = null;
+
+        System.out.println("");
+        
+        try{
+            c.setAutoCommit(false);
+            s = c.createStatement();
+            ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_description AS description, gradebook.assignments.assignment_value AS points FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
+            ResultSetMetaData rsmd = rSet.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for(int i=1; i<=columnCount; i++){
+                if(i>1){
+                    System.out.print(", ");
+                }
+                System.out.print(rsmd.getColumnName(i));
+            }
+            System.out.println(" ");
+            while(rSet.next()){
+                for(int i=1; i<=columnCount; i++){
+                    if(i>1){
+                        System.out.print(", ");
+                    }
+                    System.out.print(rSet.getString(i)+" ");
+                }
+                System.out.println(" ");
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            try {
+                c.rollback();
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }finally{
+            try{
+                if(s!=null){
+                    s.close();
+                }
+                c.setAutoCommit(true);
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -209,8 +253,6 @@ public class ClassManagement {
                 System.out.println(e.getMessage());
             }
         }
-
-        System.out.println("");
     }
 
     /**
@@ -263,9 +305,6 @@ public class ClassManagement {
                 System.out.println(e.getMessage());
             }
         }
-        
-        System.out.println("");
-
     }
 
     /**
@@ -275,7 +314,7 @@ public class ClassManagement {
         System.out.println("");
         System.out.println("show-categories : list the categories with their weights");
         System.out.println("add-category name weight : add a new category"); 
-        System.out.println("show-assignment : list the assignments with their point values, grouped by category"); 
+        System.out.println("show-assignments : list the assignments with their point values, grouped by category"); 
         System.out.println("add-assignment name category description points : add a new assignment");
         System.out.println("m : Main Menu");
         System.out.println("q : Quit");
