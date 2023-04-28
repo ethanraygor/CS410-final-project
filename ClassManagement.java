@@ -14,7 +14,10 @@ public class ClassManagement {
         Scanner scanner = new Scanner(System.in);
         String input = "";
 
-        int activeClassId = -1; //Used to keep track of active class
+        /**
+         * CHANGE TO -1 AFTER CM IMPLEMENTED
+         */
+        int activeClassId = 1; //Used to keep track of active class
         
         while (running){
             printMenu();
