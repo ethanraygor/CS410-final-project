@@ -58,6 +58,10 @@ CREATE TABLE assigned (
     
 );
 
+-- Ensure that the same name and class_id do not appear together in categories
+CREATE UNIQUE INDEX idx_unique_name_category
+ON categories (category_name, class_id);
+
 -- drop table students; 
 -- drop table categories; 
 -- drop table classes; 
