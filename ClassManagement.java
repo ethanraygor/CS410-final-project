@@ -21,6 +21,9 @@ public class ClassManagement {
         
         while (running){
             printMenu();
+            if(scanner==null){
+                scanner = new Scanner(System.in);
+            }
             input = scanner.next();
             input = input.toLowerCase();
 
