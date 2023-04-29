@@ -68,7 +68,11 @@ public class ClassManagement {
                 case "sm":
                     break;
                 case "gr":
-                    running = gradeReporting(activeClassId, con, scanner);
+                    if(activeClassId>0){
+                        running = gradeReporting(activeClassId, con, scanner);
+                    }else{
+                        System.out.println("Activate a class first using Class Management");
+                    }
                     break;
                 case "q":
                     running=false;
@@ -377,6 +381,13 @@ public class ClassManagement {
      * GRADE REPORTING AND CALCULATION
      */
 
+    /**
+     * Handles Grade Reporting
+     * @param classID id of current active class
+     * @param c SQL connection
+     * @param scan System.in Scanner
+     * @return false to quit
+     */
     private static boolean gradeReporting(int classID, Connection c, Scanner scan){
         boolean rVal = true;
         boolean running = true;
@@ -419,6 +430,11 @@ public class ClassManagement {
         return rVal;
     }
 
+    /**
+     * Prints gradebook of active class
+     * @param classID id of active class
+     * @param c SQL Connection
+     */
     private static void gradebook(int classID, Connection c) {
         Statement s = null;
 
@@ -465,6 +481,12 @@ public class ClassManagement {
         }
     }
 
+    /**
+     * prints grades of specific student in a class
+     * @param args contains username
+     * @param classID active class id
+     * @param c SQL connection
+     */
     private static void studentGrades(String[] args, int classID, Connection c) {
         int id = classID;
         String username = args[1];
@@ -609,6 +631,9 @@ public class ClassManagement {
         }
     }
 
+    /**
+     * Grade Reporting Menu
+     */
     private static void printGRMenu() {
         System.out.println("");
         System.out.println("student-grades username : show student’s current grades");
