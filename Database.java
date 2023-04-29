@@ -1,6 +1,11 @@
 import java.sql.*;
 
 public class Database {
+    /**
+     * Get a database connection
+     * @return SQL Connection
+     * @throws SQLException
+     */
     public static Connection getDatabaseConnection() throws SQLException {
         int databasePort = 52705;
         String databasePassword = "sql";
