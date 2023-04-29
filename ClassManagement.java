@@ -547,6 +547,18 @@ public class ClassManagement {
                     scored+=Integer.parseInt(rSet.getString(3));
                 }
             }
+            if(attempted==0){
+                System.out.print("null , ");
+            }else{
+                score = (double)scored / (double)attempted;
+                System.out.print(Double.toString(score)+" , ");
+            }
+            if(possible==0){
+                System.out.println("null");
+            }else{
+                score = (double)scored / (double)possible;
+                System.out.println(Double.toString(score));
+            }
             System.out.println("");
         }catch(SQLException e){
             System.out.println(e.getMessage());
