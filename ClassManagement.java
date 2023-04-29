@@ -474,9 +474,12 @@ public class ClassManagement {
         int stID = -1;
         String studentID = "0";
         int attempted = 0;
-        int scored = 0;;
+        int scored = 0;
         int possible = 0;
         HashMap<String, Double> weights = new HashMap<String, Double>();
+        HashSet<String> categories = new HashSet<String>();
+        HashMap<String, Double> possibleScores = new HashMap<String, Double>();
+        HashMap<String, Double> attemptedScores = new HashMap<String, Double>();
         String currCategory = "";
         Statement s = null;
         Statement s2 = null;
@@ -496,6 +499,7 @@ public class ClassManagement {
             rSet2 = s2.executeQuery("SELECT AVG(gradebook.categories.weight) AS weight, gradebook.categories.category_name AS cat_name FROM gradebook.categories INNER JOIN gradebook.assignments ON gradebook.categories.category_id=gradebook.assignments.category_id WHERE gradebook.categories.class_id="+Integer.toString(classID)+" GROUP BY cat_name;");
             while(rSet2.next()){
                 weights.put(rSet2.getString(2), Double.parseDouble(rSet2.getString(1)));
+                categories.add(rSet2.getString(2));
             }
             s = c.createStatement();
             ResultSet rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
@@ -511,6 +515,7 @@ public class ClassManagement {
                 }
                 System.out.println(" ");
             }
+            System.out.println("");
             s.close();
             s = c.createStatement();
             rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
@@ -522,14 +527,18 @@ public class ClassManagement {
                     if(!first){
                         if(attempted==0){
                             System.out.print("null , ");
+                            attemptedScores.put(currCategory, null);
                         }else{
                             score = (double)scored / (double)attempted;
+                            attemptedScores.put(currCategory, score);
                             System.out.print(Double.toString(score)+" , ");
                         }
                         if(possible==0){
                             System.out.println("null");
+                            possibleScores.put(currCategory, null);
                         }else{
                             score = (double)scored / (double)possible;
+                            possibleScores.put(currCategory, score);
                             System.out.println(Double.toString(score));
                         }
                     }else{
@@ -559,6 +568,19 @@ public class ClassManagement {
                 score = (double)scored / (double)possible;
                 System.out.println(Double.toString(score));
             }
+            System.out.println("");
+            double totalAttempted = 0.0;
+            double totalPossible = 0.0;
+            double totalWeight = 0.0;
+            for(String cat : categories){
+                totalAttempted += attemptedScores.get(cat)*weights.get(cat);
+                totalPossible += possibleScores.get(cat)*weights.get(cat);
+                totalWeight += weights.get(cat);
+            }
+            totalAttempted = totalAttempted/totalWeight;
+            totalPossible = totalPossible/totalWeight;
+            System.out.println("Total Attempted : "+Double.toString(totalAttempted));
+            System.out.println("Total Possible  : "+Double.toString(totalPossible));
             System.out.println("");
         }catch(SQLException e){
             System.out.println(e.getMessage());
