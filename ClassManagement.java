@@ -558,14 +558,18 @@ public class ClassManagement {
             }
             if(attempted==0){
                 System.out.print("null , ");
+                attemptedScores.put(currCategory, null);
             }else{
                 score = (double)scored / (double)attempted;
+                attemptedScores.put(currCategory, score);
                 System.out.print(Double.toString(score)+" , ");
             }
             if(possible==0){
                 System.out.println("null");
+                possibleScores.put(currCategory, null);
             }else{
                 score = (double)scored / (double)possible;
+                possibleScores.put(currCategory, score);
                 System.out.println(Double.toString(score));
             }
             System.out.println("");
@@ -573,8 +577,12 @@ public class ClassManagement {
             double totalPossible = 0.0;
             double totalWeight = 0.0;
             for(String cat : categories){
-                totalAttempted += attemptedScores.get(cat)*weights.get(cat);
-                totalPossible += possibleScores.get(cat)*weights.get(cat);
+                if(attemptedScores.get(cat)!=null){
+                    totalAttempted += attemptedScores.get(cat)*weights.get(cat);
+                }
+                if(possibleScores.get(cat)!=null){
+                    totalPossible += possibleScores.get(cat)*weights.get(cat);
+                }
                 totalWeight += weights.get(cat);
             }
             totalAttempted = totalAttempted/totalWeight;
