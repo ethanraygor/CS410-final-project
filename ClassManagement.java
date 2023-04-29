@@ -110,7 +110,10 @@ public class ClassManagement {
                 ListClasses(c);
                 break;
             case "al":
-                rVal = activateClass(c, scanner);
+                rVal = activateClass(args, c);
+                break;
+            case "show-class":
+                System.out.println(classId);
                 break;
             default:
                 System.out.println("invalid selection");
@@ -154,13 +157,7 @@ public class ClassManagement {
 
         try {
         	sqlStatement = connection.createStatement();
-            sqlStatement.executeUpdate("SELECT gradebook.classes.*, val.num_students
-                                        FROM (
-                                        SELECT class_id, COUNT(student_id) AS num_students 
-                                        FROM enroll
-                                        GROUP BY class_id
-                                        ) val
-                                        INNER JOIN gradebook.classes ON val.class_id = gradebook.classes.class_id;");
+            sqlStatement.executeUpdate("SELECT gradebook.classes.*, val.num_students FROM ( SELECT class_id, COUNT(student_id) AS num_students FROM enroll GROUP BY class_id ) val INNER JOIN gradebook.classes ON val.class_id = gradebook.classes.class_id");
 
         } catch (SQLException sqlException) {
             System.out.println("Failed to get list of class");
@@ -180,9 +177,44 @@ public class ClassManagement {
      * @param scanner
      * @return
      */
-    private static int activateClass(Connection c, Scanner scanner){
+    private static int activateClass(String[] args, Connection c){
+        Connection connection = c;
+        Statement sqlStatement = null;
+        int rval = -1;
 
-        return 0;
+        try {
+        	sqlStatement = connection.createStatement();
+            ResultSet rs = null;
+            if(args.length == 2){
+                rs = sqlStatement.executeQuery("SELECT * FROM classes WHERE course_number = "+args[1]);
+                if(rs.getFetchSize() == 1){
+                    rval = Integer.parseInt(rs.getString("class_id"));
+                }
+            } else if(args.length == 3){
+                rs = sqlStatement.executeQuery("SELECT * FROM classes WHERE course_number = "+args[1]+" and term = "+args[2]);
+                if(rs.getFetchSize() == 1){
+                    rval = Integer.parseInt(rs.getString("class_id"));
+                }
+            }else if(args.length == 4){
+                rs = sqlStatement.executeQuery("SELECT * FROM classes WHERE course_number = "+args[1]+" and term = "+args[2]+" and section = "+args[3]+";");
+                if(rs.getFetchSize() == 1){
+                    rval = Integer.parseInt(rs.getString("class_id"));
+                }
+            }else{
+                System.out.println("Failed activate a class");
+            }
+
+        } catch (SQLException sqlException) {
+            System.out.println("Failed activate a class");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+        return rval;
     }
 
      
