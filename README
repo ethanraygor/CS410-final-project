@@ -2,10 +2,21 @@
 ## Rich Boundji and Ethan Raygor
 
 ## Implementation
+Overall:
+Our program is provides a simple command line menu which users can use to interact with the backend database. We used a while loop with switch statements to let users enter commands.
 Class Management:
 
 Category and Assignment Management:
-
+To implement this method we used the same basic menu structure with a while loop and a switch statement. The usage aligns with the assignments README. All inserts and queries are done in SQL.
 Student Management:
 
 Grade Reporting:
+To implement this method we used the same basic menu structure with a while loop and a switch statement. The usage aligns with the assignments README. The 'student-grades username' command does some of the calculations in the front end because multiple different types of scores are required to be reported. SQL is used to pull all of the data. The 'gradebook' command is done entirely in SQL.
+
+## Usage
+To compile:
+`javac *.java` in the source code directory
+To run:
+`java ClassManagement` in the source code directory after compiling
+Usage:
+Usage aligns with what was descirbed in the project handout.
