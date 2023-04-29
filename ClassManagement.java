@@ -511,8 +511,10 @@ public class ClassManagement {
                 }
                 System.out.println(" ");
             }
+            s.close();
+            s = c.createStatement();
+            rSet = s.executeQuery("SELECT gradebook.assignments.assignment_name AS name, gradebook.assignments.assignment_value AS points, gradebook.assigned.grade AS score, gradebook.assigned.grade / gradebook.assignments.assignment_value AS grade, gradebook.categories.category_name AS category FROM gradebook.assignments INNER JOIN gradebook.categories ON gradebook.assignments.category_id = gradebook.categories.category_id INNER JOIN gradebook.assigned ON gradebook.assignments.assignment_id=gradebook.assigned.assigned_id AND gradebook.assigned.student_id="+Integer.toString(stID)+" WHERE gradebook.categories.class_id="+Integer.toString(id)+" ORDER BY gradebook.assignments.category_id");
             System.out.println("category , attempted score , total score");
-            rSet.beforeFirst();
             boolean first = true;
             double score;
             while(rSet.next()){
