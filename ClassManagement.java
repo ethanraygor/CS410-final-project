@@ -37,26 +37,7 @@ public class ClassManagement {
 
             switch(input){
                 case "cm":
-                        /**
-                         * Use activeClassId to keep track of active class or update the other functions
-                        */
-                        System.out.print("Create a class: ");
-                        Scanner sc = new Scanner(scanner.next());
-                        sc.useDelimiter(" ");
-                        String courseNumber = sc.next();
-                        String term = "";
-                        int sectionNumber = 0;
-                        if(sc.hasNext()){
-                            term = sc.next();
-                            if(sc.hasNext()){
-                                sectionNumber = sc.nextInt();
-                                if(sc.hasNext()){
-                                    sectionNumber = sc.nextInt();
-                                }
-                            }
-
-                        }
-                        // reateClass()
+                    activeClassId = classManagement(activeClassId, con, scanner);
                     break;
                 case "cam":
                     if(activeClassId>0){
@@ -103,6 +84,108 @@ public class ClassManagement {
         System.out.println("q : Quit");
     }
 
+    /**
+     * Class Management
+     */
+
+    /**
+     * 
+     * @return
+     */
+    private static int classManagement(int classId, Connection c, Scanner scanner){
+        // boolean running = true;
+        int rVal = classId;
+        String input = "";
+        String[] args;
+
+        //print class Management menu
+        input = scanner.nextLine();
+        args = input.split("\\s+");
+
+        switch(args[0]){
+            case "cl":
+                createClass(args, c);
+                break;
+            case "lc":
+                ListClasses(c);
+                break;
+            case "al":
+                rVal = activateClass(c, scanner);
+                break;
+            default:
+                System.out.println("invalid selection");
+                break;
+        }
+        return rVal;
+    }
+
+    /**
+     * creates a class in the class table
+     * @param args contains course number, term, section number, and description
+     * @param c SQL connection
+     */
+    private static void createClass(String[] args, Connection c){
+        Connection connection = c;
+        Statement sqlStatement = null;
+
+        try {
+        	sqlStatement = connection.createStatement();
+            sqlStatement.executeUpdate("insert into gradebook.classes (course_number, term, section, class_description) values ("+ args[1]+", "+ args[2]+", "+ Integer.parseInt(args[3])+", "+ args[4]+")");
+
+        } catch (SQLException sqlException) {
+            System.out.println("Failed add class to table");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    /**
+     * list the content of the class teble
+     * @param c SQL connection
+     */
+    private static void ListClasses(Connection c){
+        Connection connection = c;
+        Statement sqlStatement = null;
+
+        try {
+        	sqlStatement = connection.createStatement();
+            sqlStatement.executeUpdate("SELECT gradebook.classes.*, val.num_students
+                                        FROM (
+                                        SELECT class_id, COUNT(student_id) AS num_students 
+                                        FROM enroll
+                                        GROUP BY class_id
+                                        ) val
+                                        INNER JOIN gradebook.classes ON val.class_id = gradebook.classes.class_id;");
+
+        } catch (SQLException sqlException) {
+            System.out.println("Failed to get list of class");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    /**
+     * 
+     * @param c
+     * @param scanner
+     * @return
+     */
+    private static int activateClass(Connection c, Scanner scanner){
+
+        return 0;
+    }
+
+     
     /**
      * CATEGORY AND ASSIGNMENT MANAGEMENT
      */
