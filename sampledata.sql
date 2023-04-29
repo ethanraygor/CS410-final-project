@@ -445,5 +445,5 @@ insert into assignments (assignment_name, assignment_description, assignment_val
 
 -- assigned
 insert into assigned (student_id, assignment_id, grade) values (1, 1, 15);
-insert into assigned (student_id, assignment_id, grade) values (1, 2, 15);
+insert into assigned (student_id, assignment_id) values (1, 2);
 insert into assigned (student_id, assignment_id, grade) values (1, 3, 75);
