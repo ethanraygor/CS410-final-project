@@ -96,7 +96,6 @@ public class ClassManagement {
         System.out.println("cam : Category and Assignment Management");
         System.out.println("sm : Student Management");
         System.out.println("gr : Grade Reporting");
-        System.out.println("gc : Grade Calculation");
         System.out.println("q : Quit");
     }
 
@@ -421,7 +420,6 @@ public class ClassManagement {
     }
 
     private static void gradebook(int classID, Connection c) {
-        /*int id = classID;
         Statement s = null;
 
         System.out.println("");
@@ -429,7 +427,7 @@ public class ClassManagement {
         try{
             c.setAutoCommit(false);
             s = c.createStatement();
-            ResultSet rSet = s.executeQuery("SELECT gradebook.categories.category_name AS name, gradebook.categories.weight FROM gradebook.categories WHERE gradebook.categories.class_id="+Integer.toString(id)+";");
+            ResultSet rSet = s.executeQuery("SELECT gradebook.students.student_id, gradebook.students.username, SUM(gradebook.assigned.grade * gradebook.assignments.assignment_value * gradebook.categories.weight / table1.total_weight) / 100 AS attempted_grade, SUM(COALESCE(gradebook.assigned.grade, 0) * gradebook.assignments.assignment_value * gradebook.categories.weight / table1.total_weight) / 100 AS possible_grade FROM gradebook.students JOIN gradebook.enroll ON gradebook.students.student_id = gradebook.enroll.student_id JOIN gradebook.categories ON gradebook.enroll.class_id = gradebook.categories.class_id JOIN (SELECT category_id, SUM(weight) AS total_weight FROM gradebook.categories WHERE class_id = "+Integer.toString(classID)+" GROUP BY category_id) table1 ON gradebook.categories.category_id = table1.category_id JOIN gradebook.assignments ON gradebook.categories.category_id = gradebook.assignments.category_id LEFT JOIN gradebook.assigned ON gradebook.students.student_id = gradebook.assigned.student_id AND gradebook.assignments.assignment_id = gradebook.assigned.assigned_id WHERE gradebook.enroll.class_id = "+Integer.toString(classID)+" GROUP BY gradebook.students.student_id, gradebook.students.username");
             ResultSetMetaData rsmd = rSet.getMetaData();
             int columnCount = rsmd.getColumnCount();
             for(int i=1; i<=columnCount; i++){
@@ -465,7 +463,6 @@ public class ClassManagement {
                 System.out.println(e.getMessage());
             }
         }
-        */
     }
 
     private static void studentGrades(String[] args, int classID, Connection c) {
@@ -587,8 +584,8 @@ public class ClassManagement {
             }
             totalAttempted = totalAttempted/totalWeight;
             totalPossible = totalPossible/totalWeight;
-            System.out.println("Total Attempted : "+Double.toString(totalAttempted));
-            System.out.println("Total Possible  : "+Double.toString(totalPossible));
+            System.out.println("Attempted Grade : "+Double.toString(totalAttempted));
+            System.out.println("Total Grade     : "+Double.toString(totalPossible));
             System.out.println("");
         }catch(SQLException e){
             System.out.println(e.getMessage());
