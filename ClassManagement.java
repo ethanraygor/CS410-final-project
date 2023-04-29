@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class ClassManagement {
@@ -472,7 +473,11 @@ public class ClassManagement {
         String username = args[1];
         int stID = -1;
         String studentID = "0";
+        int attempted = 0;
+        int scored = 0;;
+        int possible = 0;
         HashMap<String, Double> weights = new HashMap<String, Double>();
+        String currCategory = "";
         Statement s = null;
         Statement s2 = null;
 
@@ -506,6 +511,41 @@ public class ClassManagement {
                 }
                 System.out.println(" ");
             }
+            System.out.println("category , attempted score , total score");
+            rSet.beforeFirst();
+            boolean first = true;
+            double score;
+            while(rSet.next()){
+                if(!currCategory.equals(rSet.getString(5))){
+                    if(!first){
+                        if(attempted==0){
+                            System.out.print("null , ");
+                        }else{
+                            score = (double)scored / (double)attempted;
+                            System.out.print(Double.toString(score)+" , ");
+                        }
+                        if(possible==0){
+                            System.out.println("null");
+                        }else{
+                            score = (double)scored / (double)possible;
+                            System.out.println(Double.toString(score));
+                        }
+                    }else{
+                        first=false;
+                    }
+                    currCategory = rSet.getString(5);
+                    System.out.print(currCategory+" , ");
+                    attempted = 0;
+                    scored = 0;
+                    possible = 0;
+                }
+                possible+=Integer.parseInt(rSet.getString(2));
+                if(rSet.getString(3)!=null){
+                    attempted+=Integer.parseInt(rSet.getString(2));
+                    scored+=Integer.parseInt(rSet.getString(3));
+                }
+            }
+            System.out.println("");
         }catch(SQLException e){
             System.out.println(e.getMessage());
             try {
