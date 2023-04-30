@@ -47,6 +47,7 @@ public class ClassManagement {
                     }
                     break;
                 case "sm":
+                    studentManagement(activeClassId, con, scanner);
                     break;
                 case "gr":
                     if(activeClassId>0){
@@ -98,6 +99,7 @@ public class ClassManagement {
         String input = "";
         String[] args;
 
+        classManagementMenu();
         //print class Management menu
         input = scanner.next();
         args = input.split("\\s+");
@@ -112,8 +114,11 @@ public class ClassManagement {
             case "al":
                 rVal = activateClass(args, c);
                 break;
-            case "show-class":
+            case "sc":
                 System.out.println(classId);
+                break;
+            case "m":
+                
                 break;
             default:
                 System.out.println("invalid selection");
@@ -217,7 +222,18 @@ public class ClassManagement {
         return rval;
     }
 
-     
+     /**
+     * Prints the Category and Assignemnt Management Menu
+     */
+    private static void classManagementMenu(){
+        System.out.println("");
+        System.out.println("lc : List classes");
+        System.out.println("cl [course number (e.g. CS410)] [term (e.g. Sp23)] [section number] [description] : Create a class");
+        System.out.println("al [course number (e.g. CS410)] [term (e.g. Sp23)] [section number] : Select a class to active term and section number are optional");
+        System.out.println("sc : show-class shows the currently-active class");
+        System.out.println("m : Main Menu");
+    }
+
     /**
      * CATEGORY AND ASSIGNMENT MANAGEMENT
      */
@@ -492,6 +508,260 @@ public class ClassManagement {
         System.out.println("q : Quit");
     }
 
+    /**
+     * Student Management
+     */
+    /**
+     * 
+     * @param classId
+     * @param c
+     * @param scanner
+     * @return
+     */
+    private static int studentManagement(int classId, Connection c, Scanner scanner){
+        // boolean running = true;
+        int rVal = classId;
+        String input = "";
+        String[] args;
+
+        studentManagementMenu();
+        
+        //print class Management menu
+        input = scanner.next();
+        args = input.split("\\s+");
+
+        switch(args[0]){
+            case "as":
+                addStudent(args, c, classId);
+                break;
+            case "ase":
+                addStudentE(args, c, classId);
+                break;
+            case "ss":
+            showStudents(c, classId);
+                break;
+            case "sss":
+                showStudentsString(c);
+                break;
+            case "ga":
+                gradeAssignment(c, Integer.parseInt(args[1]), args[2], args[3]);
+                    break;
+            case "m":
+                
+                break;
+            default:
+                System.out.println("invalid selection");
+                break;
+        }
+        return rVal;
+    }
+
+    /**
+     * 
+     * @param args
+     * @param c
+     */
+    private static void addStudent(String[] args, Connection c, int classId){
+        Connection connection = c;
+        Statement sqlStatement = null;
+        int studentid = Integer.parseInt(args[1]);
+        String username = "";
+        String firstNmae = "";
+        String lastNmae = "";
+        
+        try {
+        	sqlStatement = connection.createStatement();
+            ResultSet rs = sqlStatement.executeQuery("SELECT * FROM students WHERE student_id = "+ args[1]);
+
+            if(rs.getFetchSize() == 1){
+                username =  rs.getString("username");
+                firstNmae = rs.getString("student_firstname");
+                lastNmae = rs.getString("student_lastname");
+
+                // check that the name is correct if not update and print a statement
+                if(!username.equals(args[2])) {
+                    System.out.println("warning: user name is being updated");
+                    // username = args[2];
+                }
+                if(!firstNmae.equals(args[3])){ 
+                    System.out.println("warning: first name is being updated");
+                    // firstNmae = args[3];
+                }
+                if(!lastNmae.equals(args[4])){ 
+                    System.out.println("warning: last name is being updated");
+                    // lastNmae = args[4];
+                }
+                
+            } else{
+                //student does not exits
+                //add student to student table
+                sqlStatement.executeUpdate("insert into students (student_id, username, student_firstname, student_lastname) values ("+args[1]+", "+args[2]+", "+args[3]+", "+args[4]);                   
+            }
+
+            //add student to class
+            sqlStatement.executeUpdate("insert into enroll (class_id, student_id) values ("+classId+", "+studentid);
+            
+        } catch (SQLException sqlException) {
+            System.out.println("Failed add student");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    /**
+     * 
+     * @param args
+     * @param c
+     */
+    private static void addStudentE(String[] args, Connection c, int classId){
+        Connection connection = c;
+        Statement sqlStatement = null;
+        
+        try {
+        	sqlStatement = connection.createStatement();
+            sqlStatement.executeUpdate("insert into enroll (class_id, student_id) values ("+classId+", "+args[1]+")");
+            
+        } catch (SQLException sqlException) {
+            System.out.println("Failed add student, student may not exist");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    /**
+     * 
+     * @param args
+     * @param c
+     */
+    private static void showStudents(Connection c, int classId){
+        Connection connection = c;
+        Statement sqlStatement = null;
+
+        int studentid = 0;
+        String username = "";
+        String firstNmae = "";
+        String lastNmae = "";
+        
+        try {
+        	sqlStatement = connection.createStatement();
+            ResultSet rs = sqlStatement.executeQuery("SELECT students.* FROM ( SELECT student_id FROM enroll WHERE class_id = "+classId+")val INNER JOIN students ON val.student_id = students.student_id");
+            while(rs.next()){
+                studentid =  Integer.parseInt(rs.getString("student_id"));
+                username =  rs.getString("username");
+                firstNmae = rs.getString("student_firstname");
+                lastNmae = rs.getString("student_lastname");
+                
+                System.out.println(studentid +" "+username+" "+firstNmae+" "+lastNmae);
+            }
+            
+        } catch (SQLException sqlException) {
+            System.out.println("Failed add student, student may not exist");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    /**
+     * 
+     * @param args
+     * @param c
+     */
+    private static void showStudentsString(Connection c){
+        Connection connection = c;
+        Statement sqlStatement = null;
+
+        int studentid = 0;
+        String username = "";
+        String firstNmae = "";
+        String lastNmae = "";
+        
+        try {
+        	sqlStatement = connection.createStatement();
+            ResultSet rs = sqlStatement.executeQuery("SELECT * FROM students WHERE LOWER(student_firstname) LIKE LOWER('%string%') OR LOWER(username) LIKE LOWER('%string%') OR LOWER(student_lastname) LIKE LOWER('%string%')");
+            while(rs.next()){
+                studentid = Integer.parseInt(rs.getString("student_id"));
+                username =  rs.getString("username");
+                firstNmae = rs.getString("student_firstname");
+                lastNmae = rs.getString("student_lastname");
+                
+                System.out.println(studentid +" "+username+" "+firstNmae+" "+lastNmae);
+            }
+            
+        } catch (SQLException sqlException) {
+            System.out.println("Failed show student string");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    private static void gradeAssignment(Connection c, int grade, String username, String assignmentname){
+        Connection connection = c;
+        Statement sqlStatement = null;
+
+        try {
+
+            //if grade exceed max show warning
+            ResultSet rs = sqlStatement.executeQuery("SELECT * FROM assignments where assignment_name = "+assignmentname);
+            int maxPoint = Integer.parseInt(rs.getString("assignment_value"));
+            int assignmentId = Integer.parseInt(rs.getString("assignment_id"));
+            if(grade > maxPoint){
+                System.out.println("warning: Invalide number of points "+maxPoint);
+            } else {
+                //else
+                //if student already has grade replace the grade
+                rs = sqlStatement.executeQuery("SELECT * FROM students where username = "+username);
+                int studentId = Integer.parseInt(rs.getString("student_id"));
+
+                rs = sqlStatement.executeQuery("SELECT * FROM assigned where student_id = "+assignmentId+" and assignment_id = "+studentId);
+                if(rs.getFetchSize() > 0){
+                    sqlStatement.executeUpdate("update assigned SET grade = "+grade+" where student_id = "+studentId+" and assignment_id = "+assignmentId);
+                } else{
+                    sqlStatement.executeUpdate("insert into assigned (student_id, assignment_id, grade) values ("+studentId+", "+assignmentId+", "+grade+")");
+                }
+                //else add the grade
+            }
+            
+        } catch (SQLException sqlException) {
+            System.out.println("Failed grade assignment");
+            // System.out.println(sqlException.getMessage());
+
+        } finally {
+            try {
+                if (sqlStatement != null)
+                    sqlStatement.close();
+            } catch (SQLException se2) {}
+        }
+    }
+
+    private static void studentManagementMenu(){
+        System.out.println("");
+        System.out.println("as : add-student username studentid First Last");
+        System.out.println("ase : add-student username — enrolls an already-existing student in the current class"); 
+        System.out.println("ss : show-students - show all students in the current class"); 
+        System.out.println("sss : show-students string - show all students with 'string' in their name or username");
+        System.out.println("ga : grade assignmentname username grad");
+        System.out.println("m : menu");
+    }
     /**
      * GRADE REPORTING AND CALCULATION
      */
