@@ -99,7 +99,7 @@ public class ClassManagement {
         String[] args;
 
         //print class Management menu
-        input = scanner.nextLine();
+        input = scanner.next();
         args = input.split("\\s+");
 
         switch(args[0]){
