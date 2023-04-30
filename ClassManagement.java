@@ -90,7 +90,7 @@ public class ClassManagement {
      */
 
     /**
-     * 
+     * manage classes
      * @return
      */
     private static int classManagement(int classId, Connection c, Scanner scanner){
@@ -177,7 +177,7 @@ public class ClassManagement {
     }
 
     /**
-     * 
+     * selects the active class
      * @param c
      * @param scanner
      * @return
@@ -511,8 +511,9 @@ public class ClassManagement {
     /**
      * Student Management
      */
+
     /**
-     * 
+     * Manage students
      * @param classId
      * @param c
      * @param scanner
@@ -557,7 +558,7 @@ public class ClassManagement {
     }
 
     /**
-     * 
+     * adds a student and enrolls them in the current class. If the student already exists, enroll them in the class
      * @param args
      * @param c
      */
@@ -614,7 +615,7 @@ public class ClassManagement {
     }
 
     /**
-     * 
+     * enrolls an already-existing student in the current class
      * @param args
      * @param c
      */
@@ -639,7 +640,7 @@ public class ClassManagement {
     }
 
     /**
-     * 
+     * show the student in the current class
      * @param args
      * @param c
      */
@@ -677,7 +678,7 @@ public class ClassManagement {
     }
 
     /**
-     * 
+     * show the students with string in there name
      * @param args
      * @param c
      */
@@ -714,6 +715,13 @@ public class ClassManagement {
         }
     }
 
+    /**
+     * assignes grades to student for a given assignment
+     * @param c
+     * @param grade
+     * @param username
+     * @param assignmentname
+     */
     private static void gradeAssignment(Connection c, int grade, String username, String assignmentname){
         Connection connection = c;
         Statement sqlStatement = null;
@@ -753,6 +761,9 @@ public class ClassManagement {
         }
     }
 
+    /**
+     * student Management Menu
+     */
     private static void studentManagementMenu(){
         System.out.println("");
         System.out.println("as : add-student username studentid First Last");
