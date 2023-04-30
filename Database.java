@@ -7,7 +7,8 @@ public class Database {
      * @throws SQLException
      */
     public static Connection getDatabaseConnection() throws SQLException {
-        int databasePort = 52705;
+        // int databasePort = 52705;
+        int databasePort = 54050;
         String databasePassword = "sql";
         try {
             System.out.println("jdbc:mysql://localhost:"+databasePort+"/test?verifyServerCertificate=false&useSSL=true");
